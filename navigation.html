@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation · Driver × Indie Ridge</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<style>
+@font-face { font-family: 'Helvetica Now Display'; font-weight: 400; font-display: swap; src: url(assets/8762a6e199e5416e344eea333f97d55b.woff2) format('woff2'); }
+@font-face { font-family: 'Helvetica Now Display'; font-weight: 500; font-display: swap; src: url(assets/6d799c3410f5b43439138eb2e291c39b.woff2) format('woff2'); }
+@font-face { font-family: 'Helvetica Now Display'; font-weight: 600 700; font-display: swap; src: url(assets/5e58670df50cc59a136cc1d46ab9bc65.woff2) format('woff2'); }
+:root { --ink: #1a1b18; --text: #232323; --red: #ce0000; --line: #d1d1d1; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--text); background: #ffffff; font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+ul { list-style: none; margin: 0; padding: 0; }
+h1, h2, h3, p { margin: 0; }
+a, button, .sq { transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s; }
+a:focus-visible, button:focus-visible { outline: none; box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px rgba(26, 27, 24, .55); }
+.label { font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 1.04px; text-transform: uppercase; }
+.ib { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; }
+.ic { display: block; width: 20px; height: 20px; }
+.sq { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px; border: 1px solid var(--text); border-radius: 1px; color: var(--text); }
+
+/* Announcement bar */
+.ann { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 16px; background: var(--text); color: #ffffff; white-space: nowrap; }
+.ann__dot { color: var(--red); }
+.ann a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Desktop header */
+.dh { position: relative; z-index: 20; }
+.dh .ann { height: 40px; }
+.dh-row { display: flex; align-items: center; gap: 24px; height: 80px; padding: 0 48px; background: #ffffff; border-bottom: 1px solid var(--line); }
+.dh-logo img { display: block; width: 54px; height: 53px; }
+.dh-nav { display: flex; gap: 4px; font-size: 13px; font-weight: 700; line-height: 1.5; letter-spacing: 1.04px; text-transform: uppercase; white-space: nowrap; }
+.dh-ni { display: flex; align-items: center; height: 79px; padding: 0 16px; text-decoration: underline 2px transparent; text-underline-offset: 8px; transition: color .2s, text-decoration-color .2s; }
+.dh-ni.is-active { text-decoration-color: var(--red); }
+.dh-icons { display: flex; margin-left: auto; margin-right: -12px; }
+.mm { position: absolute; left: 0; right: 0; top: 100%; padding: 0 48px; background: #ffffff; box-shadow: 0 2px 3px rgba(0, 0, 0, .1); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s; }
+.mm.is-open { opacity: 1; visibility: visible; transform: none; transition: opacity .2s ease, transform .2s ease, visibility 0s; }
+.mm__in { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 336px; min-height: 409px; max-width: 1344px; }
+.mm__col { padding: 32px 40px; border-right: 1px solid var(--line); }
+.mm__col:first-child { padding-left: 0; }
+.mm__h { width: 180px; min-height: 70px; font-size: 24px; font-weight: 700; letter-spacing: .24px; text-transform: uppercase; color: var(--ink); }
+.mm__list { padding-top: 48px; font-size: 16px; font-weight: 500; line-height: 1.1; letter-spacing: .32px; color: #211e25; }
+.mm__list li { padding: 6px 0; }
+.mm__feat { display: flex; flex-direction: column; gap: 48px; padding: 32px 0 32px 40px; }
+.mm__media { aspect-ratio: 296 / 196; overflow: hidden; }
+.mm__media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s cubic-bezier(.32, .72, 0, 1); }
+.mm__go { display: flex; align-items: center; gap: 16px; margin-top: 16px; font-size: 16px; font-weight: 500; line-height: 1.1; letter-spacing: .32px; text-transform: uppercase; }
+.mm__go span:first-child { flex: 1; }
+.dim { position: fixed; inset: 0; z-index: 10; background: rgba(26, 27, 24, .55); opacity: 0; pointer-events: none; transition: opacity .3s ease-out; }
+.dim.is-on { opacity: 1; }
+
+@media (hover: hover) {
+  .dh-ni:hover { text-decoration-color: var(--red); }
+  .dh-ni--cat:hover { color: var(--red); text-decoration-color: transparent; }
+  .dh-icons .ib:hover, .mm a:hover { color: var(--red); }
+  .ann a:hover { text-decoration-thickness: 2px; }
+  .mm__feat:hover .mm__media img { transform: scale(1.04); }
+  .mm__feat:hover .sq { background: var(--red); border-color: var(--red); color: #ffffff; }
+}
+
+/* Mobile header and menu */
+.mh, .drawer { display: none; }
+.mh .ann { height: 36px; }
+.mh-row { display: flex; align-items: center; justify-content: space-between; height: 56px; padding-left: 16px; border-bottom: 1px solid var(--line); }
+.mh-row img { display: block; width: 45px; height: 44px; }
+.cbar { display: flex; align-items: center; gap: 16px; height: 48px; padding: 0 16px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; font-size: 13px; font-weight: 700; line-height: 1.5; letter-spacing: 1.04px; text-transform: uppercase; white-space: nowrap; }
+.drawer { position: fixed; inset: 0; z-index: 30; background: #ffffff; transform: translateX(-100%); visibility: hidden; transition: transform .3s ease, visibility 0s linear .3s; }
+.drawer.is-open { transform: none; visibility: visible; transition: transform .3s ease, visibility 0s; }
+.drawer__top { display: flex; align-items: center; height: 56px; padding-left: 10px; }
+.drawer__x { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--text); color: #ffffff; }
+.drawer__body { position: absolute; inset: 56px 0 0; overflow: hidden; }
+.panel { position: absolute; inset: 0; overflow-y: auto; background: #ffffff; transition: transform .3s ease, visibility 0s; }
+.panel.is-away { transform: translateX(-100%); visibility: hidden; transition: transform .3s ease, visibility 0s linear .3s; }
+.panel.is-next { transform: translateX(100%); visibility: hidden; transition: transform .3s ease, visibility 0s linear .3s; }
+.panel--main { display: flex; flex-direction: column; padding-top: 16px; }
+.row { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 24px 16px; border-bottom: 1px solid var(--line); font-size: 20px; font-weight: 700; letter-spacing: .2px; text-transform: uppercase; color: var(--ink); }
+.acct { display: flex; align-items: center; gap: 8px; padding: 24px 16px; color: var(--ink); }
+.acct span { text-decoration: underline; text-underline-offset: 3px; }
+.mark { margin: auto 16px 28px; width: 64px; }
+.mark img { display: block; width: 64px; height: 64px; }
+.panel--shop { padding-top: 16px; }
+.shop-head { display: flex; align-items: center; gap: 16px; padding: 24px 16px; }
+.back { width: 44px; height: 44px; margin: -6px; display: flex; align-items: center; justify-content: center; }
+.shop-head h2 { font-size: 20px; font-weight: 700; letter-spacing: .2px; text-transform: uppercase; color: var(--text); }
+.grp { padding: 16px; border-bottom: 1px solid var(--line); }
+.grp h3 { font-size: 13px; font-weight: 700; line-height: 1.5; letter-spacing: 1.04px; text-transform: uppercase; color: #211e25; }
+.grp ul { padding-top: 8px; }
+.grp li a { display: block; padding: 6px 0; font-size: 16px; font-weight: 500; line-height: 1.1; letter-spacing: .32px; color: #211e25; }
+.art { display: flex; flex-direction: column; gap: 16px; padding: 16px 16px 32px; }
+.art h3 { font-size: 13px; font-weight: 700; line-height: 1.5; letter-spacing: 1.04px; text-transform: uppercase; color: #211e25; }
+.art__media { aspect-ratio: 454 / 300; overflow: hidden; }
+.art__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Hero */
+.hero { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 760px; padding: 0 48px 64px; overflow: hidden; color: #ffffff; }
+.hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, .6)); }
+.hero__in { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+.hero h1 { max-width: 680px; font-size: 72px; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
+.hero p { max-width: 512px; font-size: 16px; font-weight: 500; line-height: 1.1; letter-spacing: .32px; }
+.hero p.label { font-size: 13px; line-height: 1.5; letter-spacing: 1.04px; }
+.hero__btns { display: flex; flex-wrap: wrap; gap: 24px; padding-top: 8px; }
+.btn-red { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 30px; background: var(--red); font-size: 15px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
+@media (hover: hover) { .btn-red:hover { background: #a30000; } }
+
+@media (max-width: 1023px) {
+  .dh, .dim { display: none; }
+  .mh, .drawer { display: block; }
+  .hero { min-height: 600px; padding: 0 16px 40px; }
+  .hero h1 { font-size: 48px; }
+  .hero__btns { gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm, .dim, .drawer, .panel, .mm__media img { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="dh" id="dh">
+  <div class="ann label">
+    <span>Free shipping for orders over $200</span>
+    <span class="ann__dot" aria-hidden="true">•</span>
+    <a href="#">Exchanges &amp; returns</a>
+  </div>
+  <header class="dh-row">
+    <a href="#" class="dh-logo" aria-label="Indie Ridge home"><img src="assets/indie-ridge-wordmark.svg" alt=""></a>
+    <nav class="dh-nav" aria-label="Main">
+      <a href="#" class="dh-ni" id="shop-all" aria-expanded="false" aria-controls="mega">Shop all</a>
+      <a href="#" class="dh-ni dh-ni--cat">Motorcycle boots</a>
+      <a href="#" class="dh-ni dh-ni--cat">Motorcycle gloves</a>
+      <a href="#" class="dh-ni dh-ni--cat">Apparel</a>
+      <a href="#" class="dh-ni dh-ni--cat">Accessories</a>
+    </nav>
+    <div class="dh-icons">
+      <button type="button" class="ib" aria-label="Search"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="4.75" stroke="currentColor" stroke-width="1.5"/><path d="m12.5 12.5 3.25 3.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <button type="button" class="ib" aria-label="Account"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="6.5" r="2.75" stroke="currentColor" stroke-width="1.5"/><path d="m5.172 14.591-.437.786a.588.588 0 0 0 .514.873h9.502a.588.588 0 0 0 .514-.873l-.437-.786a5.523 5.523 0 0 0-9.656 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="ib" aria-label="Cart"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.392 6.875h13.216v8.016c0 .567-.224 1.112-.624 1.513-.4.402-.941.627-1.506.627H5.522a2.13 2.13 0 0 1-1.506-.627 2.15 2.15 0 0 1-.624-1.513zM8.818 2.969h2.333c.618 0 1.211.247 1.649.686a2.35 2.35 0 0 1 .683 1.658v1.562H6.486V5.313c0-.622.246-1.218.683-1.658a2.33 2.33 0 0 1 1.65-.686" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+    </div>
+  </header>
+  <div class="mm" id="mega">
+    <div class="mm__in">
+      <div class="mm__col">
+        <h2 class="mm__h"><a href="#">Motorcycle boots</a></h2>
+        <ul class="mm__list"><li><a href="#">Men’s Boots</a></li><li><a href="#">Women’s Boots</a></li><li><a href="#">Waterproof</a></li><li><a href="#">Summer</a></li></ul>
+      </div>
+      <div class="mm__col">
+        <h2 class="mm__h"><a href="#">Motorcycle gloves</a></h2>
+        <ul class="mm__list"><li><a href="#">Gauntlet</a></li><li><a href="#">All Leather</a></li><li><a href="#">Denim &amp; Leather</a></li><li><a href="#">Summer</a></li></ul>
+      </div>
+      <div class="mm__col">
+        <h2 class="mm__h"><a href="#">Apparel</a></h2>
+        <ul class="mm__list"><li><a href="#">The Seven-Year Shirt</a></li><li><a href="#">Short Sleeve</a></li><li><a href="#">Long Sleeve</a></li><li><a href="#">Print Editions</a></li></ul>
+      </div>
+      <div class="mm__col">
+        <h2 class="mm__h"><a href="#">Accessories</a></h2>
+        <ul class="mm__list"><li><a href="#">Face Masks</a></li><li><a href="#">Riding Sleeves</a></li><li><a href="#">Hats</a></li><li><a href="#">Leather Conditioner</a></li></ul>
+      </div>
+      <a href="#" class="mm__feat">
+        <h2 class="mm__h" style="width: auto; min-height: 0;">The artist’s bay</h2>
+        <div>
+          <div class="mm__media"><img src="assets/artists-bay.jpg" alt="Indie Ridge bandana print against a graffiti wall"></div>
+          <div class="mm__go"><span>Shop prints</span><span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="dim" id="dim" aria-hidden="true"></div>
+
+<div class="mh">
+  <div class="ann label"><span>Free shipping for orders over $200</span></div>
+  <div class="mh-row">
+    <a href="#" aria-label="Indie Ridge home"><img src="assets/indie-ridge-wordmark.svg" alt=""></a>
+    <div style="display: flex;">
+      <button type="button" class="ib" aria-label="Search"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="4.75" stroke="currentColor" stroke-width="1.5"/><path d="m12.5 12.5 3.25 3.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <button type="button" class="ib" aria-label="Cart"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.392 6.875h13.216v8.016c0 .567-.224 1.112-.624 1.513-.4.402-.941.627-1.506.627H5.522a2.13 2.13 0 0 1-1.506-.627 2.15 2.15 0 0 1-.624-1.513zM8.818 2.969h2.333c.618 0 1.211.247 1.649.686a2.35 2.35 0 0 1 .683 1.658v1.562H6.486V5.313c0-.622.246-1.218.683-1.658a2.33 2.33 0 0 1 1.65-.686" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="ib" id="menu-open" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 3.5h12M1 10.5h12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+  <nav class="cbar" aria-label="Collections"><a href="#">Boots</a><a href="#">Gloves</a><a href="#">Apparel</a><a href="#">Accessories</a></nav>
+</div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="drawer__top">
+    <button type="button" class="ib" id="menu-close" aria-label="Close menu"><span class="drawer__x"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="m3.5 3.5 7 7m0-7-7 7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span></button>
+  </div>
+  <div class="drawer__body">
+    <nav class="panel panel--main" id="panel-main" aria-label="Menu">
+      <button type="button" class="row" id="shop-open" aria-controls="panel-shop">Shop all<span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+      <a href="#" class="row">Motorcycle boots<span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a href="#" class="row">Motorcycle gloves<span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a href="#" class="row">Apparel<span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a href="#" class="row">Accessories<span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a href="#" class="acct label" style="font-weight: 700;"><svg class="ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="6.5" r="2.75" stroke="currentColor" stroke-width="1.5"/><path d="m5.172 14.591-.437.786a.588.588 0 0 0 .514.873h9.502a.588.588 0 0 0 .514-.873l-.437-.786a5.523 5.523 0 0 0-9.656 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Account</span></a>
+      <a href="#" class="mark" aria-label="Indie Ridge home"><img src="assets/ir-mark.svg" alt=""></a>
+    </nav>
+    <section class="panel panel--shop is-next" id="panel-shop" aria-label="Shop all">
+      <div class="shop-head">
+        <button type="button" class="back" id="shop-back" aria-label="Back to menu"><span class="sq"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.75 2.8 4.55 7l4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+        <h2><a href="#">Shop all</a></h2>
+      </div>
+      <div class="grp"><h3><a href="#">Motorcycle boots</a></h3><ul><li><a href="#">Men’s Boots</a></li><li><a href="#">Women’s Boots</a></li><li><a href="#">Waterproof</a></li><li><a href="#">Summer</a></li></ul></div>
+      <div class="grp"><h3><a href="#">Motorcycle gloves</a></h3><ul><li><a href="#">Gauntlet</a></li><li><a href="#">All Leather</a></li><li><a href="#">Denim &amp; Leather</a></li><li><a href="#">Summer</a></li></ul></div>
+      <div class="grp"><h3><a href="#">Apparel</a></h3><ul><li><a href="#">The Seven-Year Shirt</a></li><li><a href="#">Short Sleeve</a></li><li><a href="#">Long Sleeve</a></li><li><a href="#">Print Editions</a></li></ul></div>
+      <div class="grp"><h3><a href="#">Accessories</a></h3><ul><li><a href="#">Face Masks</a></li><li><a href="#">Riding Sleeves</a></li><li><a href="#">Hats</a></li><li><a href="#">Leather Conditioner</a></li></ul></div>
+      <a href="#" class="art">
+        <h3>The artist’s bay</h3>
+        <div class="art__media"><img src="assets/artists-bay.jpg" alt="Indie Ridge bandana print against a graffiti wall"></div>
+        <div class="mm__go"><span>Shop prints</span><span class="sq" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 2.8 9.45 7l-4.2 4.2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+      </a>
+    </section>
+  </div>
+</div>
+
+<main>
+  <section class="hero" aria-label="Featured">
+    <img src="assets/dd3019da15a2fd2cfa6cfc6062b47bbe.webp" alt="Black-and-white photo of an Old Soul Racing number 35 rider on a vintage motorcycle at speed">
+    <div class="hero__in">
+      <p class="label">Riding season, round two</p>
+      <h1>Built for the long way home</h1>
+      <p>CE-rated motorcycle boots, tested by riders who put 500 miles a month on them.</p>
+      <div class="hero__btns"><a href="#" class="btn-red">Shop boots</a><a href="#" class="btn-red">Shop gloves</a></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// Desktop: Shop All opens the mega menu on hover, with a short delay so crossing the nav doesn't flash it open.
+const dh = $('dh'), shopAll = $('shop-all'), mega = $('mega'), dim = $('dim');
+let timer;
+const setMega = (open) => {
+  clearTimeout(timer);
+  mega.classList.toggle('is-open', open);
+  dim.classList.toggle('is-on', open);
+  shopAll.classList.toggle('is-active', open);
+  shopAll.setAttribute('aria-expanded', String(open));
+};
+const later = (open, ms) => { clearTimeout(timer); timer = setTimeout(() => setMega(open), ms); };
+shopAll.addEventListener('mouseenter', () => { if (!mega.classList.contains('is-open')) later(true, 150); else clearTimeout(timer); });
+shopAll.addEventListener('focus', () => setMega(true));
+mega.addEventListener('mouseenter', () => clearTimeout(timer));
+dh.addEventListener('mouseleave', () => later(false, 200));
+dh.querySelectorAll('.dh-ni--cat, .dh-logo, .dh-icons').forEach((el) => el.addEventListener('mouseenter', () => setMega(false)));
+
+// Mobile: full-screen drawer, with Shop All sliding in over the main list.
+const drawer = $('drawer'), openBtn = $('menu-open'), main = $('panel-main'), shop = $('panel-shop');
+const showShop = (on) => { main.classList.toggle('is-away', on); shop.classList.toggle('is-next', !on); };
+const setDrawer = (open) => {
+  drawer.classList.toggle('is-open', open);
+  openBtn.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) $('menu-close').focus(); else { showShop(false); openBtn.focus(); }
+};
+openBtn.addEventListener('click', () => setDrawer(true));
+$('menu-close').addEventListener('click', () => setDrawer(false));
+$('shop-open').addEventListener('click', () => { showShop(true); $('shop-back').focus(); });
+$('shop-back').addEventListener('click', () => { showShop(false); $('shop-open').focus(); });
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (drawer.classList.contains('is-open')) { if (shop.classList.contains('is-next')) setDrawer(false); else { showShop(false); $('shop-open').focus(); } }
+  else setMega(false);
+});
+</script>
+</body>
+</html>
